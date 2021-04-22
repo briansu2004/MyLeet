@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>lc56: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">example.com/lc56/main.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">/*
+https://leetcode.com/explore/learn/card/fun-with-arrays/521/introduction/3238/
+Max Consecutive Ones
+
+Given a binary array nums, return the maximum number of consecutive 1's in the array.
+
+Example 1:
+Input: nums = [1,1,0,1,1,1]
+Output: 3
+Explanation: The first two digits or the last three digits are consecutive 1s. The maximum number of consecutive 1s is 3.
+
+Example 2:
+Input: nums = [1,0,1,1,0,1]
+Output: 2
+
+Constraints:
+1 &lt;= nums.length &lt;= 105
+nums[i] is either 0 or 1.
+
+Hint:
+You need to think about two things as far as any window is concerned. One is the starting point for the window. How do you detect that a new window of 1s has started? The next part is detecting the ending point for this window. How do you detect the ending point for an existing window? If you figure these two things out, you will be able to detect the windows of consecutive ones. All that remains afterward is to find the longest such window and return the size.
+*/
+
+package main
+
+func findMaxConsecutiveOnes(nums []int) int <span class="cov8" title="1">{
+        best, crt := 0, 0
+        for _, v := range nums </span><span class="cov8" title="1">{
+                if crt+v &gt; best </span><span class="cov8" title="1">{
+                        best = crt + v
+                }</span>
+                <span class="cov8" title="1">crt = (crt + v) * v</span>
+        }
+        <span class="cov8" title="1">return best</span>
+}
+
+/*
+func findMaxConsecutiveOnes1(nums []int) int {
+        A, B := 0, 0
+
+        for _, v := range nums {
+                if A+v &gt; B {
+                        B = A + v
+                }
+                A = (A + v) * v
+        }
+
+        return B
+}
+
+func findMaxConsecutiveOnes0(nums []int) int {
+        if len(nums) == 0 {
+                return 0
+        }
+
+        if len(nums) == 1 {
+                if nums[0] == 1 {
+                        return 1
+                }
+                return 0
+        }
+
+        var i, cnt, start, end int
+        needNewSearch := true
+
+        //find the first 1
+        for i = 0; i &lt; len(nums); i++ {
+                if nums[i] == 1 {
+                        //found 1
+                        start = i
+                        end = i
+                        cnt = calcCnt(start, end, cnt)
+                        needNewSearch = false
+                        break
+                }
+        }
+
+        //can't find any 1
+        if needNewSearch {
+                return 0
+        }
+
+        for i = start + 1; i &lt; len(nums); i++ {
+                if nums[i] == 1 {
+                        //current number is 1
+
+                        //if this is a new search, set the start
+                        if needNewSearch {
+                                start = i
+                                needNewSearch = false
+                        }
+
+                        end = i
+                        cnt = calcCnt(start, end, cnt)
+
+                        //check the next one
+                } else {
+                        //found a number that is not 1
+                        if needNewSearch {
+                                //still not 1
+                                //continue searching 1
+                                start = i
+                                end = i
+                        } else {
+                                //finish the current search
+                                //calc the start, end, cnt
+                                end = i
+                                cnt = calcCnt(start, end, cnt)
+                                //start a new search
+                                needNewSearch = true
+                        }
+                }
+        }
+
+        //finish the whole loop
+        if !needNewSearch {
+                end = len(nums)
+                cnt = calcCnt(start, end, cnt)
+
+        }
+
+        return cnt
+}
+
+func calcCnt(start int, end int, curCnt int) int {
+        if end-start &gt; curCnt {
+                return end - start
+        }
+        return curCnt
+}
+
+func main() {
+        var n []int
+
+        fmt.Println("[] - expected: 0, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{0}
+        fmt.Println("[0] - expected: 0, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1}
+        fmt.Println("[1] - expected: 1, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{0, 0}
+        fmt.Println("[0,0] - expected: 0, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{0, 0, 0, 0}
+        fmt.Println("[0,0,0,0] - expected: 0, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 1, 1, 1}
+        fmt.Println("[1,1,1,1] - expected: 4, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{0, 1}
+        fmt.Println("[0,1] - expected: 1, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 0}
+        fmt.Println("[1,0] - expected: 1, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{0, 1, 0}
+        fmt.Println("[0,1,0] - expected: 1, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{0, 1, 1}
+        fmt.Println("[0,1,1] - expected: 2, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 0, 1}
+        fmt.Println("[1,0,1] - expected: 1, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 1, 0, 1, 1, 1}
+        fmt.Println("[1,1,0,1,1,1] - expected: 3, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 0, 1, 1, 0, 1}
+        fmt.Println("[1,0,1,1,0,1] - expected: 2, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 1, 0, 1, 1, 1, 1, 1, 1}
+        fmt.Println("[1,1,0,1,1,1,1,1,1] - expected: 6, output:", findMaxConsecutiveOnes(n))
+
+        n = []int{1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0}
+        fmt.Println("[1,1,0,1,1,1,1,1,1,0,0] - expected: 6, output:", findMaxConsecutiveOnes(n))
+}
+*/
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

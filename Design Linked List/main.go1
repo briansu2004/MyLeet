@@ -1,0 +1,198 @@
+/*
+https://leetcode.com/explore/learn/card/linked-list/209/singly-linked-list/1290/
+Design Linked List
+
+Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+A node in a singly linked list should have two attributes: val and next. val is the value of the current node, and next is a pointer/reference to the next node.
+If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.
+
+Implement the MyLinkedList class:
+MyLinkedList() Initializes the MyLinkedList object.
+int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
+void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+void addAtTail(int val) Append a node of value val as the last element of the linked list.
+void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index equals the length of the linked list, the node will be appended to the end of the linked list. If index is greater than the length, the node will not be inserted.
+void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+
+Example 1:
+Input
+["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
+[[], [1], [3], [1, 2], [1], [1], [1]]
+Output
+[null, null, null, null, 2, null, 3]
+
+Explanation
+MyLinkedList myLinkedList = new MyLinkedList();
+myLinkedList.addAtHead(1);
+myLinkedList.addAtTail(3);
+myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
+myLinkedList.get(1);              // return 2
+myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
+myLinkedList.get(1);              // return 3
+
+Constraints:
+0 <= index, val <= 1000
+Please do not use the built-in LinkedList library.
+At most 2000 calls will be made to get, addAtHead, addAtTail, addAtIndex and deleteAtIndex.
+*/
+
+package main
+
+type MyLinkedList struct {
+	first *LinkedNode
+	last  *LinkedNode
+}
+
+type LinkedNode struct {
+	val  int
+	next *LinkedNode
+	prev *LinkedNode
+}
+
+func Constructor() MyLinkedList {
+	return MyLinkedList{nil, nil}
+}
+
+func (this *MyLinkedList) Get(index int) int {
+	if index < 0 {
+		return -1
+	}
+	node, _ := this.getNode(index)
+	if node == nil {
+		return -1
+	}
+	return node.val
+}
+
+func (this *MyLinkedList) getNode(index int) (*LinkedNode, int) {
+	if index < 0 {
+		i := -1
+		n := this.first
+		for n != nil && i > index {
+			n = n.prev
+			i--
+		}
+		return n, i
+	} else {
+		i := 0
+		n := this.first
+		for n != nil && i < index {
+			n = n.next
+			i++
+		}
+		return n, i
+	}
+}
+
+func (this *MyLinkedList) AddAtHead(val int) {
+	if this.first == nil {
+		// add node to empty list
+		this.first = &LinkedNode{val: val, next: nil, prev: nil}
+		this.last = this.first
+	} else {
+		n := &LinkedNode{val: val, next: this.first, prev: nil}
+		this.first.prev = n
+		this.first = n
+	}
+}
+
+func (this *MyLinkedList) AddAtTail(val int) {
+	if this.last == nil {
+		this.AddAtHead(val)
+	} else {
+		n := &LinkedNode{val: val, next: nil, prev: this.last}
+		this.last.next = n
+		this.last = n
+	}
+}
+
+func (this *MyLinkedList) AddAtIndex(index int, val int) {
+	if index == 0 {
+		this.AddAtHead(val)
+	} else {
+		node, i := this.getNode(index)
+		if node == nil {
+			if i == index {
+				this.AddAtTail(val)
+			}
+		} else {
+			// add new node before "node"
+			n := &LinkedNode{val: val, next: node, prev: node.prev}
+			node.prev.next = n
+			node.prev = n
+		}
+	}
+}
+
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+	if index < 0 {
+		// are you kidding me
+		return
+	}
+	n, _ := this.getNode(index)
+	if n == nil {
+		return
+	}
+	if n.next != nil {
+		n.next.prev = n.prev
+	}
+	if n.prev != nil {
+		n.prev.next = n.next
+	}
+	if n == this.first {
+		this.first = n.next
+	}
+	if n == this.last {
+		this.last = n.prev
+	}
+}
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * obj := Constructor();
+ * param_1 := obj.Get(index);
+ * obj.AddAtHead(val);
+ * obj.AddAtTail(val);
+ * obj.AddAtIndex(index,val);
+ * obj.DeleteAtIndex(index);
+ */
+
+/** Print */
+// func (this *MyLinkedList) Print() {
+// 	fmt.Print("[")
+// 	for this.next != nil {
+// 		fmt.Print(this.val)
+// 		this = this.next
+// 		if this.next != nil {
+// 			fmt.Print(",")
+// 		}
+// 	}
+// 	fmt.Print("]")
+// 	fmt.Println()
+// }
+
+// func main() {
+// 	obj := Constructor()
+// 	obj.Print()
+
+// 	obj.AddAtHead(1)
+// 	obj.Print()
+
+// 	obj.AddAtTail(3)
+// 	obj.Print()
+
+// 	obj.AddAtIndex(1, 2)
+// 	obj.Print()
+
+// 	obj.DeleteAtIndex(2)
+// 	obj.Print()
+
+// 	n := obj.Get(0)
+// 	fmt.Println(n)
+// }
+
+
+//59 / 59 test cases passed.
+//Status: Accepted
+//Runtime: 28 ms
+//Memory Usage: 6.6 MB

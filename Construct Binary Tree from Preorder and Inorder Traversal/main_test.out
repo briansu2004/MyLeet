@@ -1,0 +1,6 @@
+mode: set
+example.com/lc56/main.go:26.45,28.25 2 1
+example.com/lc56/main.go:34.2,34.13 1 1
+example.com/lc56/main.go:28.25,29.19 1 1
+example.com/lc56/main.go:32.3,32.22 1 1
+example.com/lc56/main.go:29.19,31.4 1 1
