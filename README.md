@@ -1,0 +1,4 @@
+
+# Practice Go at leetcode
+
+😀
