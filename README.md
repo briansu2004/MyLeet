@@ -1,4 +1,4 @@
 
-# Practice Go at leetcode
+# Practice Go/Python/Java at leetcode
 
 😀
