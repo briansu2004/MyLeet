@@ -26,8 +26,23 @@ package main
 
 import "sort"
 
-//nums is sorted in non-decreasing order!!!
+//3
 func sortedSquares(nums []int) []int {
+	for i := 0; i < len(nums); i++ {
+		nums[i] = nums[i] * nums[i]
+	}
+	for i := 1; i < len(nums); i++ {
+		if i >= 1 && nums[i-1] > nums[i] {
+			nums[i-1], nums[i] = nums[i], nums[i-1]
+			i -= 2
+		}
+	}
+	return nums
+}
+
+//2
+//nums is sorted in non-decreasing order!!!
+func sortedSquares2(nums []int) []int {
 	l, r := 0, len(nums)-1
 	res := make([]int, len(nums))
 	for i := len(nums) - 1; i >= 0; i-- {
@@ -49,7 +64,8 @@ func abs(n int) int {
 	return -n
 }
 
-func sortedSquares0(nums []int) (res []int) {
+//1
+func sortedSquares1(nums []int) (res []int) {
 	for _, v := range nums {
 		res = append(res, v*v)
 	}
@@ -63,7 +79,6 @@ func sortedSquares0(nums []int) (res []int) {
 // Status: Accepted
 // Runtime: 32 ms
 // Memory Usage: 6.6 MB
-//
 // =>
 //137 / 137 test cases passed.
 // Status: Accepted
@@ -71,3 +86,8 @@ func sortedSquares0(nums []int) (res []int) {
 // Memory Usage: 6.6 MB
 // Your runtime beats 92.02 % of golang submission
 // Your memory usage beats 74.47 % of golang submissions
+// =>
+// 137 / 137 test cases passed.
+// Status: Accepted
+// Runtime: 712 ms
+// Memory Usage: 6.5 MB
